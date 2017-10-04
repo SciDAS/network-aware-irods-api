@@ -5,13 +5,14 @@ port = 5000
 keyfile =
 certfile =
 
-[sys-path]
-exposures = /PATH_TO/nih-exposures-api/server/exposures
-controllers = /PATH_TO/nih-exposures-api/server/controllers
+[irods]
+host =
+port = 1247
+user =
+password =
+zone =
+client_user =
+client_zone =
 
-[postgres]
-host = FQDN_OR_IP
-port = 5432
-database = exposures
-username = datatrans
-password = datatrans
+[sys-path]
+controllers = /PATH_TO/network-aware-irods-api/server/controllers

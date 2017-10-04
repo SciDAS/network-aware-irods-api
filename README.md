@@ -26,7 +26,7 @@ $ cp ini/connexion.ini.example ini/connexion.ini
 ```
 
 - Change `/PATH_TO/` to be the actual path to the code.
-- If using the docker based database update the `FQDN_OR_IP` to be that of the platform docker is being run from.
+- Populate `[irods]` fields with information for a reachable running instance of iRODS. The values for `client_user` and `client_zone` are not being used at this time.
 
 	```config
 	[connexion]
@@ -35,24 +35,21 @@ $ cp ini/connexion.ini.example ini/connexion.ini
 	port = 5000
 	keyfile =
 	certfile =
-
+	
+	[irods]
+	host =
+	port = 1247
+	user =
+	password = 
+	zone =
+	client_user =
+	client_zone =
+	
 	[sys-path]
-	exposures = /PATH_TO/nih-exposures-api/server/exposures
-	controllers = /PATH_TO/nih-exposures-api/server/controllers
-
-	[postgres]
-	host = FQDN_OR_IP
-	port = 5432
-	database = exposures
-	username = datatrans
-	password = datatrans
+	controllers = /PATH_TO/network-aware-irods-api/server/controllers
 	```
 
-Ensure the database is running
-
-- Docker implemented database described in [database/README.md](../database/README.md)
-
-To run the server, please execute the following:
+To run the server, execute the following:
 
 ```
 python3 app.py
