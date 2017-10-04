@@ -1,0 +1,212 @@
+---
+swagger: "2.0"
+info:
+  description: "Network Aware iRODS API"
+  version: "1.0.0"
+  title: "Network Aware iRODS API"
+  termsOfService: "None"
+  contact:
+    name: "Michael J. Stealey"
+    url: "https://github.com/scidas/network-aware-irods-api"
+    email: "stealey@renci.org"
+  license:
+    name: "MIT"
+    url: "http://opensource.org/licenses/MIT"
+host: "localhost:5000"
+basePath: "/v1"
+schemes:
+- "https"
+paths:
+  /getLogicalLocation:
+    get:
+      tags:
+      - "default"
+      summary: "get complete iRODS logical path to file from filename"
+      description: "get complete iRODS logical path to file from filename\n\n@param\n\
+        - filename - unique iRODS logical filename\n- match_exact - match filename\
+        \ exactly\n- include_trash - include trash in search path\n\n@response {JSON\
+        \ array}  \n- irods_filenames - complete iRODS logical path\n"
+      operationId: "controllers.default_controller.get_logical_location_get"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filename"
+        in: "query"
+        description: "unique iRODS logical filename"
+        required: true
+        type: "string"
+      - name: "match_exact"
+        in: "query"
+        description: "match filename exactly, default = false"
+        required: false
+        type: "boolean"
+        default: false
+      - name: "include_trash"
+        in: "query"
+        description: "include trash in search path, default = false"
+        required: false
+        type: "boolean"
+        default: false
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/inline_response_200"
+        400:
+          description: "Invalid parameter"
+        404:
+          description: "No resnode found"
+        500:
+          description: "Server error"
+  /getReplicas:
+    get:
+      tags:
+      - "default"
+      summary: "get replica information from complete iRODS filename"
+      description: "get replica information from complete iRODS filename\n\n@param\n\
+        - filename - unique complete iRODS logical filename\n\n@response {JSON array}\
+        \ \n- resource_name - iRODS resources\n- number - replication number\n- path\
+        \ - path on physical disk\n- status - replication status\n"
+      operationId: "controllers.default_controller.get_replicas_get"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filename"
+        in: "query"
+        description: "unique iRODS logical filename"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/inline_response_200_1"
+        400:
+          description: "Invalid parameter"
+        404:
+          description: "No replicas found"
+        500:
+          description: "Server error"
+  /getHostNode:
+    get:
+      tags:
+      - "default"
+      summary: "get host node from iRODS resource name"
+      description: "get host node from iRODS resource name\n\n@param\n- resource_name\
+        \ - unique iRODS resource node\n\n@response {json string} \n- hostnode - returns\
+        \ resource host node\n"
+      operationId: "controllers.default_controller.get_host_node_get"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "resource_name"
+        in: "query"
+        description: "unique iRODS resource name"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/inline_response_200_2"
+        400:
+          description: "Invalid parameter"
+        404:
+          description: "No host node found"
+        500:
+          description: "Server error"
+  /getHostSite:
+    get:
+      tags:
+      - "default"
+      summary: "get host site from iRODS resource name"
+      description: "get host site from iRODS resource name\n\n@param\n- resnode -\
+        \ unique iRODS resource node\n\n@response {json string} \n- site - returns\
+        \ name of site\n"
+      operationId: "controllers.default_controller.get_host_site_get"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "resource_name"
+        in: "query"
+        description: "unique iRODS resource name"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/inline_response_200_3"
+        400:
+          description: "Invalid parameter"
+        404:
+          description: "No site found"
+        500:
+          description: "Server error"
+definitions:
+  inline_response_200_1_replicas:
+    properties:
+      resource_name:
+        type: "string"
+      number:
+        type: "integer"
+        format: "int32"
+      path:
+        type: "string"
+      status:
+        type: "integer"
+        format: "int32"
+  inline_response_200_3_site:
+    properties:
+      perfsonar_node:
+        type: "string"
+      sitename:
+        type: "string"
+  inline_response_200_1:
+    properties:
+      replicas:
+        type: "array"
+        items:
+          $ref: "#/definitions/inline_response_200_1_replicas"
+  inline_response_200:
+    properties:
+      irods_filenames:
+        type: "array"
+        items:
+          type: "string"
+  inline_response_200_2:
+    properties:
+      hostnode:
+        type: "string"
+        description: "host node"
+  inline_response_200_3:
+    properties:
+      site:
+        $ref: "#/definitions/inline_response_200_3_site"
+parameters:
+  p_filename:
+    name: "filename"
+    in: "query"
+    description: "unique iRODS logical filename"
+    required: true
+    type: "string"
+  p_match_exact:
+    name: "match_exact"
+    in: "query"
+    description: "match filename exactly, default = false"
+    required: false
+    type: "boolean"
+    default: false
+  p_include_trash:
+    name: "include_trash"
+    in: "query"
+    description: "include trash in search path, default = false"
+    required: false
+    type: "boolean"
+    default: false
+  p_resource_name:
+    name: "resource_name"
+    in: "query"
+    description: "unique iRODS resource name"
+    required: true
+    type: "string"

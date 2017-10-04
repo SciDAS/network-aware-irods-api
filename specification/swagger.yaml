@@ -1,0 +1,189 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Network Aware iRODS API
+  description: Network Aware iRODS API
+  termsOfService: None
+  contact:
+    name: Michael J. Stealey
+    url: 'https://github.com/scidas/network-aware-irods-api'
+    email: stealey@renci.org
+  license:
+    name: MIT
+    url: 'http://opensource.org/licenses/MIT'
+host: 'localhost:5000'
+basePath: /v1
+schemes:
+  - https
+paths:
+  /getLogicalLocation:
+    get:
+      summary: get complete iRODS logical path to file from filename
+      description: |
+        get complete iRODS logical path to file from filename
+      
+        @param
+        - filename - unique iRODS logical filename
+        - match_exact - match filename exactly
+        - include_trash - include trash in search path
+        
+        @response {JSON array}  
+        - irods_filenames - complete iRODS logical path
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/p_filename'
+        - $ref: '#/parameters/p_match_exact'
+        - $ref: '#/parameters/p_include_trash'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              irods_filenames:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Invalid parameter
+        '404':
+          description: No resnode found
+        '500':
+          description: Server error
+  /getReplicas:
+    get:
+      summary: get replica information from complete iRODS filename
+      description: |
+        get replica information from complete iRODS filename
+        
+        @param
+        - filename - unique complete iRODS logical filename
+        
+        @response {JSON array} 
+        - resource_name - iRODS resources
+        - number - replication number
+        - path - path on physical disk
+        - status - replication status
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/p_filename'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              replicas:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    resource_name:
+                      type: string
+                    number:
+                      type: integer
+                      format: int32
+                    path:
+                      type: string
+                    status:
+                      type: integer
+                      format: int32
+        '400':
+          description: Invalid parameter
+        '404':
+          description: No replicas found
+        '500':
+          description: Server error
+  /getHostNode:
+    get:
+      summary: get host node from iRODS resource name
+      description: |
+        get host node from iRODS resource name
+        
+        @param
+        - resource_name - unique iRODS resource node
+        
+        @response {json string} 
+        - hostnode - returns resource host node
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/p_resource_name'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              hostnode:
+                type: string
+                description: host node
+        '400':
+          description: Invalid parameter
+        '404':
+          description: No host node found
+        '500':
+          description: Server error
+  /getHostSite:
+    get:
+      summary: get host site from iRODS resource name
+      description: |
+        get host site from iRODS resource name
+        
+        @param
+        - resnode - unique iRODS resource node
+        
+        @response {json string} 
+        - site - returns name of site
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/p_resource_name'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              site:
+                type: object
+                properties:
+                  perfsonar_node:
+                    type: string
+                  sitename:
+                    type: string
+        '400':
+          description: Invalid parameter
+        '404':
+          description: No site found
+        '500':
+          description: Server error
+parameters:
+  p_filename:
+    name: filename
+    in: query
+    description: unique iRODS logical filename
+    required: true
+    type: string
+  p_match_exact:
+    name: match_exact
+    in: query
+    description: match filename exactly, default = false
+    required: false
+    type: boolean
+    default: false
+  p_include_trash:
+    name: include_trash
+    in: query
+    description: include trash in search path, default = false
+    required: false
+    type: boolean
+    default: false
+  p_resource_name:
+    name: resource_name
+    in: query
+    description: unique iRODS resource name
+    required: true
+    type: string

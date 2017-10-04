@@ -1,0 +1,6 @@
+.DS_Store
+.idea/
+server/ini/connexion.ini
+server/venv/
+docker/network-aware-irods.env
+__pycache__/

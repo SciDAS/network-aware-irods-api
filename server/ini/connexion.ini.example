@@ -1,0 +1,17 @@
+[connexion]
+server =
+debug = True
+port = 5000
+keyfile =
+certfile =
+
+[sys-path]
+exposures = /PATH_TO/nih-exposures-api/server/exposures
+controllers = /PATH_TO/nih-exposures-api/server/controllers
+
+[postgres]
+host = FQDN_OR_IP
+port = 5432
+database = exposures
+username = datatrans
+password = datatrans
