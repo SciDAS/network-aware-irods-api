@@ -40,7 +40,7 @@ if [[ "$1" = 'app.py' ]]; then
 
     # update swagger.yaml file
     if [[ ! -z ${SWAGGER_HOST} ]]; then
-        sed -i 's/host: "localhost:5000"/host: \"'${SWAGGER_HOST}'\"/g' /network-irods/swagger/swagger.yaml
+        sed -i 's/host: .*/host: \"'${SWAGGER_HOST}'\"/g' /network-irods/swagger/swagger.yaml
     fi
 
     # run the app

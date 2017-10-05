@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PATH_TO_DOCKERFILE=../server/
-LOCAL_PORT=7000
+LOCAL_PORT=8080
 PATH_TO_ENV_FILE=./network-aware-irods.env
 PATH_TO_SSL_CERTS=''
 
