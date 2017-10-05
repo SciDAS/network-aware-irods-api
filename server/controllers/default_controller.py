@@ -31,12 +31,13 @@ def get_host_node_get(resource_name) -> str:
     return jsonify(data)
 
 
-def get_host_site_get(resourceName) -> str:
+def get_host_site_get(resource_name) -> str:
     # TODO
     data = {
-        "site": {
-            "perfsonar_node": "string",
-            "sitename": "string"
+        'site': {
+            'perfsonar_node': 'string',
+            'sitename': resource_name,
+            'TODO': 'Not implemented at this time'
         }
     }
 
