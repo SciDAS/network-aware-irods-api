@@ -1,7 +1,7 @@
 import sys
 from controllers.irods_session import create_session
 from configparser import ConfigParser
-from irods.models import Collection, DataObject, Resource
+from irods.models import Collection, DataObject, Resource, ResourceMeta
 from irods.column import Criterion
 from flask import jsonify
 
@@ -16,9 +16,13 @@ def get_host_node_get(resource_name) -> str:
     conditions = [
         Resource.name == resource_name
     ]
-    results = sess.query(Resource.name,
-                            Resource.location).\
-        filter(*conditions).all()
+    results = sess.query(Resource.name, Resource.location).filter(*conditions).all()
+    # resc_cond = [
+    #     ResourceMeta.name == 'region',
+    #     ResourceMeta.value == 'us-east-1d'
+    # ]
+    # res = sess.query(Resource.name, Resource.location, ResourceMeta.name, ResourceMeta.value).filter(*resc_cond).all()
+    # print(res)
     sess.cleanup()
     data = {}
     data['hostnode'] = []
@@ -29,6 +33,20 @@ def get_host_node_get(resource_name) -> str:
         data['hostnode'] += {str(r_loc[1])}
 
     return jsonify(data)
+
+
+def find_resources_by_metadata(meta_key=None, meta_value=None) -> str:
+    session = create_session()
+    conditions = []
+    if meta_key:
+        conditions += [ResourceMeta.name == meta_key]
+    if meta_value:
+        conditions += [ResourceMeta.value == meta_value]
+    res = session.query(Resource.name,
+                        ResourceMeta.name,
+                        ResourceMeta.value).filter(*conditions).all()
+    session.cleanup()
+    return jsonify(list(set([r[Resource.name] for r in res.rows])))
 
 
 def get_host_site_get(resource_name) -> str:

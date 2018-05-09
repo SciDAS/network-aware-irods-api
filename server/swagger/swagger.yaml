@@ -12,7 +12,7 @@ info:
   license:
     name: "MIT"
     url: "http://opensource.org/licenses/MIT"
-host: "scidas-dev.renci.org:8080"
+host: "localhost:8080"
 basePath: "/v1"
 schemes:
 - "https"
@@ -87,6 +87,23 @@ paths:
           description: "No replicas found"
         500:
           description: "Server error"
+  /findResourcesByMetadata:
+    get:
+      summary: find iRODS resources by the key-value metadata pairs associated with them
+      description: find iRODS resources by the key-value metadata pairs associated with them
+      operationId: "controllers.default_controller.find_resources_by_metadata"
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/p_meta_key'
+        - $ref: '#/parameters/p_meta_value'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
   /getHostNode:
     get:
       tags:
@@ -210,3 +227,13 @@ parameters:
     description: "unique iRODS resource name"
     required: true
     type: "string"
+  p_meta_key:
+    name: meta_key
+    in: query
+    description: metadata key name
+    type: string
+  p_meta_value:
+    name: meta_value
+    in: query
+    description: metadata value
+    type: string
