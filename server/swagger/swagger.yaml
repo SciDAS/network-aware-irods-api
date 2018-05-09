@@ -128,6 +128,36 @@ paths:
             $ref: "#/definitions/inline_response_200_2"
         400:
           description: "Invalid parameter"
+        500:
+          description: "Server error"
+  /getResourceMetadata:
+    get:
+      tags:
+      - "default"
+      summary: "get metadata of an iRODS resource"
+      operationId: "controllers.default_controller.get_resource_metadata"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "resource_name"
+        in: "query"
+        description: "unique iRODS resource name"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              host:
+                type: string
+              key:
+                type: string
+        400:
+          description: "Invalid parameter"
         404:
           description: "No host node found"
         500:
