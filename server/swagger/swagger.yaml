@@ -58,16 +58,16 @@ paths:
           description: "No resnode found"
         500:
           description: "Server error"
-  /getReplicas:
+  /getDataObject:
     get:
       tags:
       - "default"
-      summary: "get replica information from complete iRODS filename"
+      summary: "get information about a specific data object"
       description: "get replica information from complete iRODS filename\n\n@param\n\
         - filename - unique complete iRODS logical filename\n\n@response {JSON array}\
         \ \n- resource_name - iRODS resources\n- number - replication number\n- path\
         \ - path on physical disk\n- status - replication status\n"
-      operationId: "controllers.default_controller.get_replicas_get"
+      operationId: "controllers.default_controller.get_data_object"
       produces:
       - "application/json"
       parameters:

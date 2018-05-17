@@ -98,28 +98,25 @@ def get_logical_location_get(filename, match_exact = None, include_trash = None)
     for r in results.rows:
         l_path = r.popitem()
         f_name = r.popitem()
-        # print(l_path[1] + '/' + f_name[1])
         data['irods_filenames'] += {str(l_path[1]) + '/' + str(f_name[1])}
 
     return jsonify(data)
 
 
-def get_replicas_get(filename) -> str:
+def get_data_object(filename) -> str:
     try:
         sess = create_session()
         obj = sess.data_objects.get(filename)
         sess.cleanup()
-        data = {}
-        data['replicas'] = []
+        data = dict(path=filename, type=obj.type, size=obj.size)
         for replica in obj.replicas:
-            data['replicas'] += [{
+            data.setdefault('replicas', []).append({
                 'resource_name': str(replica.resource_name),
                 'number': int(replica.number),
                 'path': str(replica.path),
                 'status': int(replica.status)
-            }]
-        print(data)
+            })
     except (CollectionDoesNotExist, DataObjectDoesNotExist):
-        return jsonify(dict(error="No replica found for %s"%filename)), 404
+        return jsonify(dict(error="Data object '%s' is not found"%filename)), 404
     return jsonify(data)
 
