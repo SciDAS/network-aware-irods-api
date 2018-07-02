@@ -12,7 +12,7 @@ info:
   license:
     name: "MIT"
     url: "http://opensource.org/licenses/MIT"
-host: "scidas-dev.renci.org:8080"
+host: "localhost:8080"
 basePath: "/v1"
 schemes:
 - "https"
@@ -58,16 +58,16 @@ paths:
           description: "No resnode found"
         500:
           description: "Server error"
-  /getReplicas:
+  /getDataObject:
     get:
       tags:
       - "default"
-      summary: "get replica information from complete iRODS filename"
+      summary: "get information about a specific data object"
       description: "get replica information from complete iRODS filename\n\n@param\n\
         - filename - unique complete iRODS logical filename\n\n@response {JSON array}\
         \ \n- resource_name - iRODS resources\n- number - replication number\n- path\
         \ - path on physical disk\n- status - replication status\n"
-      operationId: "controllers.default_controller.get_replicas_get"
+      operationId: "controllers.default_controller.get_data_object"
       produces:
       - "application/json"
       parameters:
@@ -87,6 +87,52 @@ paths:
           description: "No replicas found"
         500:
           description: "Server error"
+  /getDataObjects:
+        get:
+          tags:
+          - "default"
+          summary: "get information about a specific data object"
+          description: >
+            get data objects by their full logical names
+          operationId: "controllers.default_controller.get_data_objects"
+          produces:
+          - "application/json"
+          parameters:
+          - name: "filenames"
+            in: "query"
+            description: "iRODS logical filenames"
+            required: true
+            type: array
+            items:
+              type: string
+          responses:
+            200:
+              description: "OK"
+              schema:
+                $ref: "#/definitions/inline_response_200_1"
+            400:
+              description: "Invalid parameter"
+            404:
+              description: "No replicas found"
+            500:
+              description: "Server error"
+  /findResourcesByMetadata:
+    get:
+      summary: find iRODS resources by the key-value metadata pairs associated with them
+      description: find iRODS resources by the key-value metadata pairs associated with them
+      operationId: "controllers.default_controller.find_resources_by_metadata"
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/p_meta_key'
+        - $ref: '#/parameters/p_meta_value'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
   /getHostNode:
     get:
       tags:
@@ -109,6 +155,36 @@ paths:
           description: "OK"
           schema:
             $ref: "#/definitions/inline_response_200_2"
+        400:
+          description: "Invalid parameter"
+        500:
+          description: "Server error"
+  /getResourceMetadata:
+    get:
+      tags:
+      - "default"
+      summary: "get metadata of an iRODS resource"
+      operationId: "controllers.default_controller.get_resource_metadata"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "resource_name"
+        in: "query"
+        description: "unique iRODS resource name"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              host:
+                type: string
+              key:
+                type: string
         400:
           description: "Invalid parameter"
         404:
@@ -210,3 +286,13 @@ parameters:
     description: "unique iRODS resource name"
     required: true
     type: "string"
+  p_meta_key:
+    name: meta_key
+    in: query
+    description: metadata key name
+    type: string
+  p_meta_value:
+    name: meta_value
+    in: query
+    description: metadata value
+    type: string
