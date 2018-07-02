@@ -63,6 +63,27 @@ def get_resource_metadata(resource_name) -> str:
     return jsonify(resp)
 
 
+def get_resources_metadata(resource_names) -> list:
+    resources = []
+    sess = create_session()
+    for rn in set(resource_names):
+        conditions = [
+            Resource.name == rn
+        ]
+        res = sess.query(Resource.name,
+                         Resource.location,
+                         ResourceMeta.name,
+                         ResourceMeta.value).filter(*conditions).all()
+        if res:
+            resources += dict(name=res.rows[0][Resource.name],
+                              host=res.rows[0][Resource.location],
+                              **{r[ResourceMeta.name]: r[ResourceMeta.value]
+                                 for r in res.rows}),
+
+    sess.cleanup()
+    return jsonify(resources)
+
+
 def get_host_site_get(resource_name) -> str:
     # TODO
     data = {
@@ -124,7 +145,7 @@ def get_data_object(filename) -> str:
 def get_data_objects(filenames) -> list:
     sess = create_session()
     data_objs = []
-    for fn in filenames:
+    for fn in set(filenames):
         try:
             data_objs += sess.data_objects.get(fn),
         except (CollectionDoesNotExist, DataObjectDoesNotExist):

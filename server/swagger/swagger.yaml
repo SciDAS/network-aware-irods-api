@@ -98,9 +98,9 @@ paths:
           produces:
           - "application/json"
           parameters:
-          - name: "filenames"
-            in: "query"
-            description: "iRODS logical filenames"
+          - name: filenames
+            in: query
+            description: unique iRODS logical filenames
             required: true
             type: array
             items:
@@ -173,6 +173,40 @@ paths:
         description: "unique iRODS resource name"
         required: true
         type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              host:
+                type: string
+              key:
+                type: string
+        400:
+          description: "Invalid parameter"
+        404:
+          description: "No host node found"
+        500:
+          description: "Server error"
+  /getResourcesMetadata:
+    get:
+      tags:
+      - "default"
+      summary: get metadata of multiple iRODS resources
+      operationId: controllers.default_controller.get_resources_metadata
+      produces:
+      - "application/json"
+      parameters:
+      - name: resource_names
+        in: query
+        description: unique iRODS resource names
+        required: true
+        type: array
+        items:
+          type: string
       responses:
         200:
           description: "OK"
