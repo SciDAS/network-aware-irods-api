@@ -120,3 +120,24 @@ def get_data_object(filename) -> str:
         return jsonify(dict(error="Data object '%s' is not found"%filename)), 404
     return jsonify(data)
 
+
+def get_data_objects(filenames) -> list:
+    sess = create_session()
+    data_objs = []
+    for fn in filenames:
+        try:
+            data_objs += sess.data_objects.get(fn),
+        except (CollectionDoesNotExist, DataObjectDoesNotExist):
+            print('%s is not found'%fn)
+    sess.cleanup()
+    data = []
+    for o in data_objs:
+        data_obj = dict(path=o.path, type=o.type, size=o.size)
+        for rep in o.replicas:
+            data_obj.setdefault('replicas', []).append(dict(
+                resource_name=str(rep.resource_name),
+                number=int(rep.number),
+                path=str(rep.path),
+                status=int(rep.status)))
+        data += data_obj,
+    return jsonify(data)

@@ -87,6 +87,35 @@ paths:
           description: "No replicas found"
         500:
           description: "Server error"
+  /getDataObjects:
+        get:
+          tags:
+          - "default"
+          summary: "get information about a specific data object"
+          description: >
+            get data objects by their full logical names
+          operationId: "controllers.default_controller.get_data_objects"
+          produces:
+          - "application/json"
+          parameters:
+          - name: "filenames"
+            in: "query"
+            description: "iRODS logical filenames"
+            required: true
+            type: array
+            items:
+              type: string
+          responses:
+            200:
+              description: "OK"
+              schema:
+                $ref: "#/definitions/inline_response_200_1"
+            400:
+              description: "Invalid parameter"
+            404:
+              description: "No replicas found"
+            500:
+              description: "Server error"
   /findResourcesByMetadata:
     get:
       summary: find iRODS resources by the key-value metadata pairs associated with them
