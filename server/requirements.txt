@@ -15,7 +15,7 @@ jsonschema==2.6.0
 MarkupSafe==1.0
 prettytable==0.7.2
 git+git://github.com/irods/python-irodsclient.git
-PyYAML==3.12
+PyYAML==5.4
 requests==2.18.4
 six==1.11.0
 swagger-spec-validator==2.1.0
